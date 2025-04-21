@@ -57,7 +57,8 @@ def describe(date):
     print(f"方差：{var(date)}")
     print(f"标准差：{std(date)}")
     print(f"变异系数：{cv(date)}")
-
+class person:
+    
 
 
 
