@@ -1,17 +1,28 @@
 #include<iostream>
 #include"include/function.hpp"
+using namespace std;
+
 int main()
 {
-    int arr[8] = {1,5,4,8,7,6,3,2};
-    int len = sizeof(arr)/sizeof(arr[0]);
+    int len;
+    cout << "len: ";
+    cin >> len;
 
-    bubbleSort(arr,len);
-    for(int i = 0; i < len ; i++)
-    {
-        cout<<arr[i]<< " ";
+    int* arr = new int[len]; // 动态分配数组大小
+
+    cout << "array,splited by space: ";
+    for (int i = 0; i < len; i++) {
+        cin >> arr[i];
     }
-    cout<<endl;
 
+    bubbleSort(arr, len);
+
+    cout << "Sorted array: ";
+    for (int i = 0; i < len; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    delete[] arr; // 别忘了释放动态数组
     return 0;
-
 }
