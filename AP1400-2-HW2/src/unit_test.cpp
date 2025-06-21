@@ -3,6 +3,7 @@
 #include "gmock/gmock.h"
 #include "server.h"
 #include "client.h"
+#include "crypto.h"
 
 
 TEST(HW1Test, TEST1) {
@@ -63,7 +64,7 @@ TEST(HW1Test, TEST8) {
     auto clint{server.add_client("clint")};
     show_wallets(server);
 }
-/*
+
 TEST(HW1Test, TEST9) {
     Server server{};
     auto bryan{server.add_client("bryan")};
@@ -120,7 +121,7 @@ TEST(HW1Test, TEST14) {
         std::cout << trx <<  std::endl;
     std::cout  <<  std::string(20, '*') <<  std::endl;
 }
-
+/*
 TEST(HW1Test, TEST15) {
     Server server{};
     pending_trxs.clear();

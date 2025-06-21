@@ -8,7 +8,7 @@ class Server;
 class Client
 {
 public:
-	Client(std::string id, const Server& server);
+	Client(std::string id, Server& server);
 	std::string get_id();
 	std::string get_publickey()const;
 	double get_wallet();
@@ -19,7 +19,7 @@ public:
 	bool transfer_money(std::string receiver, double value);
 	size_t generate_nonce();
 private:
-	Server const* const server;
+	Server* server;
 	const std::string id;
 	std::string public_key;
 	std::string private_key;

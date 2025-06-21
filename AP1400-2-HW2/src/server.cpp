@@ -1,5 +1,6 @@
 #include "server.h"
 #include "client.h"
+#include "crypto.h"
 #include<random>
 static std::default_random_engine e;
 
@@ -96,10 +97,13 @@ bool Server::add_pending_trx(std::string trx, std::string signature)
     }
 	pending_trxs.push_back(trx);
 
-	if (get_wallet(sender) < value){return false;}
-
-	this->clients[this->get_client(sender)] -= value;
-	this->clients[this->get_client(receiver)] += value;
+	auto t_sender = this->get_client(sender);
+	auto public_key = t_sender->get_publickey();
+	
+	bool authentic = crypto::verifySignature(public_key, trx , signature);
+	if(get_wallet(sender) >= value && authentic)
+	{this->clients[this->get_client(sender)] -= value;
+	this->clients[this->get_client(receiver)] += value;}
 
 	return true;
 
@@ -113,6 +117,11 @@ void show_wallets(const Server& server) {
 std::map<std::shared_ptr<Client>, double> Server::get_clients() const {
     return clients;
 }
+
+/*size_t mine()
+{
+	
+}*/
 
 
 
