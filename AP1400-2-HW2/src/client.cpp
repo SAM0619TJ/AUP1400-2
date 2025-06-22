@@ -27,9 +27,9 @@ string Client::sign(string txt)const{ return crypto::signMessage(this->private_k
 
 bool Client::transfer_money(string receiver,double value)
 {
-    string trx = get_id() + '-'+ receiver + '-' + std::to_string(value);
+    string trx = get_id() + '-' + receiver + '-' + std::to_string(value);
     auto signmessage = sign(this->private_key);
     return (Server*)(this->server)->add_pending_trx(trx, signmessage);
 }
 
-size_t Client::generate_nonce(){ return e() % 1000;}
+size_t Client::generate_nonce(){ return e() % 10000;}

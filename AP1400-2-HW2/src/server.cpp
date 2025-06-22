@@ -95,16 +95,21 @@ bool Server::add_pending_trx(std::string trx, std::string signature)
         std::cout << e.what() << std::endl;
         return false;
     }
-	pending_trxs.push_back(trx);
+
 
 	auto t_sender = this->get_client(sender);
+	auto t_receiver = this->get_client(receiver);
 	auto public_key = t_sender->get_publickey();
+	if (!t_receiver || !t_sender)return false;
 	
 	bool authentic = crypto::verifySignature(public_key, trx , signature);
-	if(get_wallet(sender) >= value && authentic)
-	{this->clients[this->get_client(sender)] -= value;
-	this->clients[this->get_client(receiver)] += value;}
+	//if (!authentic)return false;
+	if(get_wallet(sender) < value) return false;
+	
+	this->clients[this->get_client(sender)] -= value;
+	this->clients[this->get_client(receiver)] += value;
 
+	pending_trxs.push_back(trx);
 	return true;
 
 }
@@ -118,10 +123,38 @@ std::map<std::shared_ptr<Client>, double> Server::get_clients() const {
     return clients;
 }
 
-/*size_t mine()
+size_t Server::mine()
 {
-	
-}*/
+	if (pending_trxs.empty()) return 0;
+
+	//connecting every trx into a string
+	string mempool;
+	for (auto& trx : pending_trxs)
+	{
+		mempool += trx;
+	}
+	cout<<mempool<<endl;
+
+
+	for (auto& [client,_] : clients)
+	{
+		for (int attempt = 0; attempt < 1000; ++attempt)
+		{
+			size_t nonce = client->generate_nonce();
+			string final_message = mempool + std::to_string(nonce);
+			string hash = crypto::sha256(final_message);
+			// 判断是否有连续的000在前10个
+			if (hash.substr(0, 10).find("000") != std::string::npos){
+				    clients[client] += 6.25;
+			 		cout << client->get_id() << endl;
+					//清空数据
+			 		pending_trxs.clear();
+			 		return nonce;
+			}
+		}
+	}
+    return 0;
+}
 
 
 
